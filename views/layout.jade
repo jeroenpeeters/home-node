@@ -1,24 +1,84 @@
 !!!5
 html
   head
-    title #{title} - My Site
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    title #{title} - Home Node
+    
+    link(href='/stylesheets/bootstrap.min.css', rel='stylesheet', media='screen')
+    //link(href='/stylesheets/style.css', rel='stylesheet')
+    
+    script(src="/javascript/jquery-1.9.1.min.js")
+    script(src="/javascript/bootstrap.min.js")
+    script(src='/javascript/knockout-2.2.1.js')
+    script(src='/javascript/sammy-latest.min.js')
     script(src='/socket.io/socket.io.js')
+    
+    style
+      .well {
+        margin-left:0;
+        margin-right:0;
+      }
+    
   body
-    header
-      h1 My Site
-    .container
-      .main-content
-        block content
-      .sidebar
-        block sidebar
-    footer
-      p Running on node with Express, Jade and Stylus
+    .navbar.navbar-fixed-top
+      .navbar-inner
+        .container
+          a.brand(href='#') Home Node
+          ul.nav(data-bind='foreach: rooms')
+            li(data-bind='css: { active: $data == $root.selectedRoomId() }')
+              a(data-bind='text: $data, attr: { href: $root.getRoomUrl($data), title: $data}')
+    
+    .container(style="margin-top:50px;")
+      .page-header
+        h2(data-bind="text: selectedRoomId")
+  
+      span(data-bind="foreach: availableAppliences")
+        .row.well
+          h2(data-bind="text: name") ...
+          .btn-group(data-toggle="buttons-radio")
+            button.btn.btn-large.btn-success(type="button") On
+            button.btn.btn-large.btn-danger(type="button") Off
     
     script
-        var socket = io.connect('http://192.168.1.10');
-        socket.on('news', function (data) {
-            //alert('test');
-            console.log(data);
-            socket.emit('my other event', { my: 'data' });
-        });
+      var socket = io.connect('http://192.168.1.10');
+      socket.on('news', function (data) {
+          //alert('test');
+          console.log(data);
+          socket.emit('my other event', { my: 'data' });
+      });
+        
+      var APPLIENCES = 
+        {'Beneden': 
+          [{ name: "Buitenlamp", address: "b1" },
+          { name: "Binnenlamp", address: "b2" }],
+        'Eerste etage':
+          [{ name: "Buitenlamp2", address: "b1" },
+          { name: "Binnenlamp3", address: "b2" }],
+        };
+      function AppliencesViewModel() {
+        var self = this;
+        
+        self.rooms = ['Beneden', 'Eerste etage', 'Tweede etage', 'Tuin'];
+        self.selectedRoomId = ko.observable();
+        //self.roomAppliences = ko.observable();
+        self.getRoomUrl = function(room) { 
+          return '#' + room; 
+       };
+     
+        self.availableAppliences = ko.observableArray();
+        
+        // Client-side routes    
+        Sammy(function() {
+          this.get('#:roomId', function() {
+              self.selectedRoomId(this.params.roomId);
+              self.availableAppliences(APPLIENCES[this.params.roomId]);
+              //self.chosenMailData(null);
+              //$.get("/mail", { folder: this.params.folder }, self.chosenFolderData);
+          });
+          
+          //Default routes forwards to first room
+          this.get('', function() { this.app.runRoute('get', '#' + self.rooms[0]) });
+        }).run();
+        
+      }
+      ko.applyBindings(new AppliencesViewModel());
+    
