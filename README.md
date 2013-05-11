@@ -5,7 +5,7 @@ Home-Node is a NodeJs application that offers a configurable dashboard to contro
 Secondly this NodeJs application is targeted to run on the RaspberryPi, creating a powerfull but low powered home 
 automation device.
 
-Home-Node uses Mochad for controlling devices (http://sourceforge.net/apps/mediawiki/mochad/index.php?title=Main_Page).
+Home-Node uses Mochad to control the devices (http://sourceforge.net/apps/mediawiki/mochad/index.php?title=Main_Page).
 
 My setup:
 - RaspberryPi with Mochad-0.1.15 + Home-Node
