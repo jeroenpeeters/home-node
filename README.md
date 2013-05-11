@@ -1,7 +1,7 @@
-home-node
+Home-Node
 =========
 
-Home-node is a NodeJs application that offers a configurable dashboard to control home appliences, such a lighting.
+Home-Node is a NodeJs application that offers a configurable dashboard to control home appliences, such a lighting.
 Secondly this NodeJs application is targeted to run on the RaspberryPi, creating a powerfull but low powered home 
 automation device.
 
