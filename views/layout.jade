@@ -35,7 +35,7 @@ html
         .row.well
           h2(data-bind="text: name") ...
           .btn-group(data-toggle="buttons-radio")
-            button.btn.btn-large.btn-success(type="button", data-bind='click: $root.sendCommand.bind($data)') On
-            button.btn.btn-large.btn-danger(type="button", data-bind='click: $root.sendCommand.bind($data)') Off
+            button.btn.btn-large.btn-success(type="button", data-bind='click: $root.sendOnCommand.bind($data)') On
+            button.btn.btn-large.btn-danger(type="button", data-bind='click: $root.sendOffCommand.bind($data)') Off
     
     script(src='/javascript/home-node.js')

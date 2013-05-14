@@ -1,49 +1,60 @@
-var socket = io.connect('http://192.168.1.10');
-socket.on('news', function (data) {
-    console.log(data);
-    socket.emit('my other event', { my: 'data' });
-});
-  
-var APPLIENCES = 
-  {'Beneden': 
-    [{ name: "Buitenlamp", address: "b1" },
-    { name: "Binnenlamp", address: "b2" }],
-  'Eerste etage':
-    [{ name: "Buitenlamp2", address: "b1" },
-    { name: "Binnenlamp3", address: "b2" }],
-  };
+
 function AppliencesViewModel() {
   var self = this;
   
-  self.rooms = ['Beneden', 'Eerste etage', 'Tweede etage', 'Tuin'];
+  var staticRooms;
+  self.rooms = ko.observableArray();
   self.selectedRoomId = ko.observable();
   //self.roomAppliences = ko.observable();
   self.getRoomUrl = function(room) { 
     return '#' + room; 
   };
   
-  self.myFunction = function(data) {
-    console.log(data);
-  }
- 
-  self.sendCommand = function(appliance){
-    socket.emit('device', appliance );
+  self.sendOnCommand = function(appliance){
+    socket.emit('device-on', appliance );
   };
+  
+  self.sendOffCommand = function(appliance){
+    socket.emit('device-off', appliance );
+  };
+  
+  self.data = ko.observableArray();
 
   self.availableAppliences = ko.observableArray();
   
-  // Client-side routes    
-  Sammy(function() {
-    this.get('#:roomId', function() {
-        self.selectedRoomId(this.params.roomId);
-        self.availableAppliences(APPLIENCES[this.params.roomId]);
-        //self.chosenMailData(null);
-        //$.get("/mail", { folder: this.params.folder }, self.chosenFolderData);
-    });
-    
-    //Default routes forwards to first room
-    this.get('', function() { this.app.runRoute('get', '#' + self.rooms[0]) });
-  }).run();
+  var initSammy = function(){
+    // Client-side routes    
+    Sammy(function() {
+      this.get('#:roomId', function() {
+          self.selectedRoomId(this.params.roomId);
+          self.availableAppliences(self.data[this.params.roomId]);
+          //self.chosenMailData(null);
+          //$.get("/mail", { folder: this.params.folder }, self.chosenFolderData);
+      });
+      
+      //Default routes forwards to first room
+      this.get('', function() { this.app.runRoute('get', '#' + staticRooms[0]) });
+      console.log('initSammy: ' + staticRooms);
+    }).run();
+  }
+  
+  var socket = io.connect('http://home.peetersweb.nl:8080');
+  socket.on('devices', function (devices) {
+    console.log(devices);
+    self.data = devices;
+    var tmpRooms = new Array();
+    for( property in devices ){
+      tmpRooms.push(property);
+    }
+    staticRooms = tmpRooms;
+    self.rooms(tmpRooms);
+    initSammy();
+  });
+  
+  socket.on('device-status', function(device) {
+    console.log('device-status: ' + device);
+  });
+ 
 }
 
 ko.applyBindings(new AppliencesViewModel());
