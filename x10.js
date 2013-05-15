@@ -1,9 +1,9 @@
 var net = require('net')
 
-function sendx10(command, callback){
+var PORT = 1099;
+var HOST = 'localhost';
 
-    var PORT = 1099;
-    var HOST = 'localhost';
+function sendx10(command, callback){
 
     var client = new net.Socket()
     client.connect(PORT, HOST, function() {
@@ -19,16 +19,21 @@ function sendx10(command, callback){
     });
 }
 
-function sendOn(device_address, callback){
+exports.sendOn = function(device_address, callback){
   console.log('pl ' + device_address + ' on');
   sendx10('pl ' + device_address + ' on\n', callback);
 }
 
-function sendOff(device_address, callback){
+exports.sendOff = function(device_address, callback){
   console.log('pl ' + device_address + ' off');
   sendx10('pl ' + device_address + ' off\n', callback);
 }
 
-exports.sendOn = sendOn
+var client = new net.Socket()
+client.connect(PORT, HOST, function() {
+  console.log("Connected to Mochad")
+})
 
-exports.sendOff = sendOff
+client.on('data', function(data) {
+  console.log('recv: ' + data)
+});
