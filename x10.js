@@ -9,14 +9,14 @@ function sendx10(command, callback){
     client.connect(PORT, HOST, function() {
         console.log('CONNECTED TO: ' + HOST + ':' + PORT)
         client.write(command)
-        //client.destroy()
+        client.destroy()
     })
 
-    client.on('data', function(data) {
-        console.log('DATA: ' + data)
-        client.destroy()
-        callback(data);
-    });
+    //client.on('data', function(data) {
+    //    console.log('DATA: ' + data)
+    //    client.destroy()
+    //    callback(data);
+    //});
 }
 
 // X10 commands
@@ -35,6 +35,7 @@ exports.sendOff = function(device_address, callback){
 
 exports.init = function(callback){
 
+  var client = new net.Socket()
   client.connect(PORT, HOST, function() {
     console.log("Connected to Mochad")
   })
