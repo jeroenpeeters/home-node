@@ -1,17 +1,17 @@
 var net = require('net')
 
 function sendx10(command, callback){
-    
+
     var PORT = 1099;
     var HOST = 'localhost';
-    
+
     var client = new net.Socket()
     client.connect(PORT, HOST, function() {
         console.log('CONNECTED TO: ' + HOST + ':' + PORT)
         client.write(command)
         //client.destroy()
     })
-    
+
     client.on('data', function(data) {
         console.log('DATA: ' + data)
         client.destroy()
