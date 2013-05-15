@@ -1,23 +1,20 @@
 extend layout
 block content
-  p
-    | Vivamus hendrerit arcu sed erat molestie
-    | vehicula. Sed auctor neque eu tellus
-    | rhoncus ut eleifend nibh porttitor. Ut in.
-  p
-    | Donec congue lacinia dui, a porttitor
-    | lectus condimentum laoreet. Nunc eu
-    | ullamcorper orci. Quisque eget odio ac
-    | lectus vestibulum faucibus eget in metus.
-    | In pellentesque faucibus vestibulum. Nulla
-    | at nulla justo, eget luctus tortor.
-block sidebar
-  .widget
-    h1 Widget
-    p
-      | Sed auctor neque eu tellus rhoncus ut
-      | eleifend nibh porttitor. Ut in nulla enim.
-    p
-      | Vivamus hendrerit arcu sed erat molestie
-      | vehicula.
+    .navbar.navbar-fixed-top
+      .navbar-inner
+        .container
+          a.brand(href='#') Home Node
+          ul.nav(data-bind='foreach: rooms')
+            li(data-bind='css: { active: $data == $root.selectedRoomId() }')
+              a(data-bind='text: $data, attr: { href: $root.getRoomUrl($data), title: $data}')
 
+    .container(style="margin-top:50px;")
+      .page-header
+        h2(data-bind="text: selectedRoomId")
+
+      span(data-bind="foreach: availableAppliences")
+        .row.well
+          h2(data-bind="text: name") ...
+          .btn-group(data-toggle="buttons-radio")
+            button.btn.btn-large.btn-success(type="button", data-bind='click: $root.sendOnCommand.bind($data)') On
+            button.btn.btn-large.btn-danger(type="button", data-bind='click: $root.sendOffCommand.bind($data)') Off
