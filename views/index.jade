@@ -18,9 +18,9 @@ block content
           .btn-group(data-toggle="buttons-radio")
             button.btn.btn-large.btn-success(type="button", data-bind='click: $root.sendOnCommand.bind($data)') On
             button.btn.btn-large.btn-danger(type="button", data-bind='click: $root.sendOffCommand.bind($data)') Off
-          input(type="text", class="span2", value="4", id="sl1")
+          input(type="text", class="sl", value="4", data-bind="attr: { id: 'sl' + address }")
           script
-            $('#sl1').slider({
+            $('.sl').slider({
               formater: function(value) {
                 return 'Current value: '+value;
               }
