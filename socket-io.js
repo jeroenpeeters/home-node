@@ -11,7 +11,7 @@ exports.init = function(server){
   });
 
   x10.init(function(data){
-    io.sockets.emit('device-status', data)
+    io.sockets.emit('device-status', 'test: '+data)
   })
 
   io.sockets.on('connection', function (socket) {

@@ -41,6 +41,7 @@ exports.init = function(callback){
   })
 
   client.on('data', function(data) {
+    console.log('recv:' + data);
     callback(data);
   });
 }
