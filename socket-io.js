@@ -10,6 +10,10 @@ exports.init = function(server){
     io.set('transports', ['xhr-polling']);
   });
 
+  x10.init(function(data){
+    io.sockets.emit('device-status', data)
+  })
+
   io.sockets.on('connection', function (socket) {
     socket.emit('devices', model.devices);
 

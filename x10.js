@@ -19,6 +19,8 @@ function sendx10(command, callback){
     });
 }
 
+// X10 commands
+
 exports.sendOn = function(device_address, callback){
   console.log('pl ' + device_address + ' on');
   sendx10('pl ' + device_address + ' on\n', callback);
@@ -29,11 +31,15 @@ exports.sendOff = function(device_address, callback){
   sendx10('pl ' + device_address + ' off\n', callback);
 }
 
-var client = new net.Socket()
-client.connect(PORT, HOST, function() {
-  console.log("Connected to Mochad")
-})
+// Receive X10 Events from Mochad
 
-client.on('data', function(data) {
-  console.log('recv: ' + data)
-});
+exports.init = function(callback){
+
+  client.connect(PORT, HOST, function() {
+    console.log("Connected to Mochad")
+  })
+
+  client.on('data', function(data) {
+    callback(data);
+  });
+}
