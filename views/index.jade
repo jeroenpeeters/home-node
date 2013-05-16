@@ -13,9 +13,14 @@ block content
         h1(data-bind="text: selectedRoomId")
 
       span(data-bind="foreach: { data: availableAppliences, afterRender: $root.initSliders}")
-        <!-- ko if: $index==0 || $index%2==0 -->
-        .row-fluid
-        <!-- /ko -->
+        //
+          ko if: $index%2==0 -->
+            </div>
+          <!-- /ko
+        //
+          ko if: $index==0 || $index%2==0 -->
+            <div class="row-fluid">
+          <!-- /ko
           .span3
             h2(data-bind="text: name") ...
             .btn-group(data-toggle="buttons-radio")
