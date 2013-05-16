@@ -10,12 +10,13 @@ block content
 
     .container(style="margin-top:50px;")
       .page-header
-        h2(data-bind="text: selectedRoomId")
+        h1(data-bind="text: selectedRoomId")
 
       span(data-bind="foreach: { data: availableAppliences, afterRender: $root.initSliders}")
-        .row.well
-          h2(data-bind="text: name") ...
-          .btn-group(data-toggle="buttons-radio")
-            button.btn.btn-large.btn-success(type="button", data-bind='click: $root.sendOnCommand.bind($data)') On
-            button.btn.btn-large.btn-danger(type="button", data-bind='click: $root.sendOffCommand.bind($data)') Off
-          input(type="text", class="sl", value="4", data-bind="attr: { id: 'sl' + address }")
+        .row-fluid(data-bind="if: $index%2==0")
+          .span3
+            h2(data-bind="text: name") ...
+            .btn-group(data-toggle="buttons-radio")
+              button.btn.btn-large.btn-success(type="button", data-bind='click: $root.sendOnCommand.bind($data)') On
+              button.btn.btn-large.btn-danger(type="button", data-bind='click: $root.sendOffCommand.bind($data)') Off
+            input(type="text", class="sl", value="4", data-bind="attr: { id: 'sl' + address }")

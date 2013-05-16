@@ -23,7 +23,6 @@ function AppliencesViewModel() {
   self.availableAppliences = ko.observableArray();
 
   self.initSliders = function(){
-    alert('initsliders')
     $('.sl').slider({
       formater: function(value) {
         return 'Current value: '+value;
