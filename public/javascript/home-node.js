@@ -46,7 +46,7 @@ function AppliencesViewModel() {
     }).run();
   }
 
-  var socket = io.connect('http://home.peetersweb.nl:8080');
+  var socket = io.connect(window.location.protocol + '//' + window.location.host);
   socket.on('devices', function (devices) {
     console.log(devices);
     self.data = devices;

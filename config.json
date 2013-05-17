@@ -1,0 +1,7 @@
+{
+  "server_port" : 8080,
+
+  "mochad_host" : "127.0.0.1",
+  "mochad_port" : 1099
+
+}

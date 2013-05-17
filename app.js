@@ -3,7 +3,13 @@ var express = require('express')
     , nib = require('nib')
     , schedule = require('node-schedule')
     , http = require('http')
-    , socketio = require('./socket-io.js')
+    , socketio = require('./src/socket-io.js')
+    , config = require('./config.json')
+
+http.createServer(function (req, res) {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.end('Hello World\n');
+}).listen(config.mochad_port, config.mochad_host);
 
 var app = express()
 var server = http.createServer(app)
@@ -15,24 +21,25 @@ function compile(str, path) {
         .use(nib())
 }
 
-app.set('views', __dirname + '/views')
-app.set('view engine', 'jade')
-app.use(express.logger('dev'))
-app.use(stylus.middleware(
-    { src: __dirname + '/public'
-    , compile: compile
-    }
-))
+app.set("view options", {layout: false});
+//app.set('views', __dirname + '/views')
+//app.set('view engine', 'jade')
+//app.use(express.logger('dev'))
+//app.use(stylus.middleware(
+//    { src: __dirname + '/public'
+//    , compile: compile
+//    }
+//))
 
 app.use(express.static(__dirname + '/public'))
 
-app.get('/', function(req, res) {
-    res.render('index',
-        { title : 'Home' }
-    )
-})
+//app.get('/', function(req, res) {
+//    res.render('index',
+//        { title : 'Home' }
+//    )
+//})
 
-server.listen(8080);
+server.listen(config.server_port);
 
 //var rule = new schedule.RecurrenceRule()
 //rule.second = 0
