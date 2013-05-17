@@ -1,16 +1,16 @@
 {
-  'Beneden':
+  "Beneden":
     [
     ],
-  'Eerste etage':
+  "Eerste etage":
     [
     ],
-  'Tweede etage':
+  "Tweede etage":
     [
     ],
-   'Tuin':
+  "Tuin":
     [
-      { name: "Schuurlamp buiten", address: "b2" },
-      { name: "Schuurlamp binnen", address: "b1" }
+      { "name": "Schuurlamp buiten", "address": "b2" },
+      { "name": "Schuurlamp binnen", "address": "b1" }
     ]
 }
