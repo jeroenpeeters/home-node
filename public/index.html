@@ -1,1 +1,63 @@
-<html><body>test</body></html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Home Node</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/stylesheets/bootstrap.min.css" />
+    <link rel="stylesheet" href="/stylesheets/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="/stylesheets/slider.css" />
+    <script type="text/javascript" src="/javascript/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="/javascript/bootstrap.min.js" ></script>
+    <script type="text/javascript" src="/javascript/bootstrap-slider.js" ></script>
+    <script type="text/javascript" src="/javascript/knockout-2.2.1.js" ></script>
+    <script type="text/javascript" src="/javascript/sammy-latest.min.js" ></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js" ></script>
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#">Home Node</a>
+          <ul class="nav" data-bind="foreach: rooms">
+            <li data-bind="css: { active: $data == $root.selectedRoomId() }">
+              <a data-bind="text: $data, attr: { href: $root.getRoomUrl($data), title: $data}" ></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="container" style="margin-top:50px;">
+      <div class="page-header">
+        <h1 data-bind="text: selectedRoomId" />
+      </div>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <td>Appliance</td>
+            <td>Switch</td>
+            <td>Dimmer</td>
+          </tr>
+        </thead>
+        <tbody data-bind="foreach: { data: availableAppliences, afterRender: $root.initSliders}">
+          <tr>
+            <td data-bind="text: name"> ... </td>
+            <td>
+              <div class="btn-group" data-toggle="buttons-radio">
+                <button class="btn btn-large btn-success" type="button" data-bind="click: $root.sendOnCommand.bind($data)">On</button>
+                <button class="btn btn-large btn-danger" type="button" data-bind="click: $root.sendOffCommand.bind($data)">Off</button>
+              </div>
+            </td>
+            <td>
+              <input type="text" class="sl" value="4" data-bind="attr: { id: 'sl' + address }"/>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+    <script type="text/javascript" src="/javascript/home-node.js" ></script>
+  </body>
+
+</html>

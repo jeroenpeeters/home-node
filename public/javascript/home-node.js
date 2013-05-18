@@ -2,7 +2,6 @@
 function AppliencesViewModel() {
   var self = this;
 
-  var staticRooms;
   self.rooms = ko.observableArray();
   self.selectedRoomId = ko.observable();
   //self.roomAppliences = ko.observable();
@@ -18,7 +17,7 @@ function AppliencesViewModel() {
     socket.emit('device-off', appliance );
   };
 
-  self.data = ko.observableArray();
+  self.data = ko.observable();
 
   self.availableAppliences = ko.observableArray();
 
@@ -30,33 +29,32 @@ function AppliencesViewModel() {
     });
   }
 
-  var initSammy = function(){
+  var initSammy = function(room){
     // Client-side routes
     Sammy(function() {
       this.get('#:roomId', function() {
           self.selectedRoomId(this.params.roomId);
-          self.availableAppliences(self.data[this.params.roomId]);
+          console.log(self.data()[this.params.roomId])
+          self.availableAppliences(self.data()[this.params.roomId]);
+          console.log(self.availableAppliences());
           //self.chosenMailData(null);
           //$.get("/mail", { folder: this.params.folder }, self.chosenFolderData);
       });
 
       //Default routes forwards to first room
-      this.get('', function() { this.app.runRoute('get', '#' + staticRooms[0]) });
-      console.log('initSammy: ' + staticRooms);
+      this.get('', function() { this.app.runRoute('get', '#' + room) });
     }).run();
   }
 
   var socket = io.connect(window.location.protocol + '//' + window.location.host);
   socket.on('devices', function (devices) {
-    console.log(devices);
-    self.data = devices;
     var tmpRooms = new Array();
     for( property in devices ){
       tmpRooms.push(property);
     }
-    staticRooms = tmpRooms;
     self.rooms(tmpRooms);
-    initSammy();
+    self.data(devices);
+    initSammy(tmpRooms[0]);
   });
 
   socket.on('device-status', function(device) {
