@@ -62,7 +62,8 @@ exports.init = function(callback){
 
   var linePattern = /(.*\n)+/
 
-  client.on('data', function(data) {
+  client.on('data', function(dataArray) {
+    var data = '' + String(dataArray); //needed to convert char array to string
     console.log('recv:' + data)
 
     var lines = data.split('\n')
