@@ -6,10 +6,10 @@ var express = require('express')
     , socketio = require('./src/socket-io.js')
     , config = require('./config.json')
 
-http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.end('Hello World\n');
-}).listen(config.mochad_port, config.mochad_host);
+//http.createServer(function (req, res) {
+//  res.writeHead(200, {'Content-Type': 'text/plain'});
+///  res.end('Hello World\n');
+//}).listen(config.mochad_port, config.mochad_host);
 
 var app = express()
 var server = http.createServer(app)

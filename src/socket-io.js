@@ -1,6 +1,6 @@
 var socketio = require('socket.io')
     , x10 = require('./x10.js')
-    , model = require('./../model.json')
+    , model = require('../model.json')
 
 exports.init = function(server){
 
@@ -24,17 +24,11 @@ exports.init = function(server){
     socket.emit('devices', model);
 
     socket.on('device-on', function (device) {
-      console.log(device);
-      x10.sendOn(device.address, function(data){
-        //socket.emit('device-status', device );
-      });
+      x10.sendOn(device.address);
     });
 
     socket.on('device-off', function (device) {
-      console.log(device);
-      x10.sendOff(device.address, function(data){
-        //socket.emit('device-status', device );
-      });
+      x10.sendOff(device.address);
     });
 
   });

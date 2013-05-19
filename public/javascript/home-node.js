@@ -9,12 +9,12 @@ function AppliencesViewModel() {
     return '#' + room;
   };
 
-  self.sendOnCommand = function(appliance){
-    socket.emit('device-on', appliance );
+  self.sendOnCommand = function(device){
+    socket.emit('device-on', device );
   };
 
-  self.sendOffCommand = function(appliance){
-    socket.emit('device-off', appliance );
+  self.sendOffCommand = function(device){
+    socket.emit('device-off', device );
   };
 
   self.data = ko.observable();
