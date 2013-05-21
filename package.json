@@ -7,6 +7,7 @@
     "jade": "*",
     "stylus": "*",
     "nib": "*",
-    "nosql": "*"
+    "nosql": "*",
+    "suncalc": "1.2.1"
   }
 }
