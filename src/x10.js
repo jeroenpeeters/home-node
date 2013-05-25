@@ -29,27 +29,23 @@ exports.sendOff = function(device_address){
 
 // Parse status information from Mochad -->
 
-//Ex: 12/17 01:19:50 Tx PL HouseUnit: A1\n
-var houseUnitPattern = /(\d{2})\/(\d{2})\s(\d{2}):(\d{2}):(\d{2})\s(Tx|Rx)\s(PL|RF)\sHouseUnit:\s(.\d)/
-//Ex: 12/17 01:19:51 Tx PL House: A Func: On
-var housePattern = /(\d{2})\/(\d{2})\s(\d{2}):(\d{2}):(\d{2})\s(Tx|Rx)\s(PL|RF)\sHouse:\s(.)\sFunc:\s(On|Off)/
+var commandPattern = /(\d{2})\/(\d{2})\s(\d{2}):(\d{2}):(\d{2})\s(Tx|Rx)\s(PL|RF)\sHouseUnit:\s(.\d)\n(\d{2})\/(\d{2})\s(\d{2}):(\d{2}):(\d{2})\s(Tx|Rx)\s(PL|RF)\sHouse:\s(.)\sFunc:\s(On|Off)\n?/
+var splitCommandsPattern = /(.+\n.+\n?)/
 
-var pattern = /(\d{2})\/(\d{2})\s(\d{2}):(\d{2}):(\d{2})\s(Tx|Rx)\s(PL|RF)\sHouseUnit:\s(.\d)\n(\d{2})\/(\d{2})\s(\d{2}):(\d{2}):(\d{2})\s(Tx|Rx)\s(PL|RF)\sHouse:\s(.)\sFunc:\s(On|Off)\n{0,1}/
-
-testHouseUnitPattern = function(line){
-  return houseUnitPattern.exec(line)
+unwrapCommand = function(line){
+  return commandPattern.exec(line)
 }
 
-testHousePattern = function(line){
-  return housePattern.exec(line)
-}
-
-printMatch = function(match){
-  for(var x = 0; x < match.length; x++){
-      console.log(x + ":" + match[x])
+splitCommands = function(data){
+  var array = data.split(splitCommandsPattern);
+  var newArray = Array();
+  for(var i = 0; i < array.length; i++){
+    if(array[i].length > 0){
+      newArray.push(array[i])
     }
+  }
+  return newArray
 }
-
 
 // <-- Parse status information from Mochad
 
@@ -62,30 +58,20 @@ exports.init = function(callback){
     console.log("Connected to Mochad")
   })
 
-  var linePattern = /(.*\n)+/
-
   client.on('data', function(dataArray) {
-    var data = '' + String(dataArray); //needed to convert char array to string
-    console.log('recv:' + data)
+    var data = '' + String(dataArray) //needed to convert char array to string
+    var commands = splitCommands(data)
 
-    var lines = data.split('\n')
-    for(var i = 0; i < lines.length; i++){
-      var line = lines[i]
-      console.log('line: ' + lines[i])
+    for(var i = 0; i < commands.length; i++){
+      cmdArray = unwrapCommand(commands[i])
 
-      var match;
-      if( match = testHouseUnitPattern(line) ){
-        printMatch(match)
-        callback(match)
-      }else if( match = testHousePattern(line) ){
-        printMatch(match)
-        callback(match)
-      }else{
-        console.log('did not match')
-      }
+      cmd = {txrx: cmdArray[6], iface: cmdArray[7], address: cmdArray[8], house: cmdArray[16], cmd: cmdArray[17]}
+
+      console.log(cmd)
+      console.log('-----')
+
+      callback(cmd)
     }
-
-    //device.state = "on"
     //db.updateDevice(device)
   });
 }
