@@ -1,7 +1,14 @@
 {
-  "server_port" : 8080,
+  "server_port"     : 8080,
 
-  "mochad_host" : "127.0.0.1",
-  "mochad_port" : 1099
+  "mochad_host"     : "127.0.0.1",
+  "mochad_port"     : 1099,
+  
+  "gw_host"         : "nuon.greenwavereality.com",
+  "gw_path"         : "/gwr/gop.php",
+  "gw_username"     : "",
+  "gw_password"     : "",
+  
+  "temp_correction" : 0
 
 }

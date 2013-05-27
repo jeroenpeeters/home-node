@@ -1,42 +1,15 @@
-var houseUnitPattern = /(\d{2})\/(\d{2})\s(\d{2}):(\d{2}):(\d{2})\s(Tx|Rx)\s(PL|RF)\sHouseUnit:\s(.\d)/
-var housePattern = /(\d{2})\/(\d{2})\s(\d{2}):(\d{2}):(\d{2})\s(Tx|Rx)\s(PL|RF)\sHouse:\s(.)\sFunc:\s(On|Off)/
+var crypto = require('crypto')
 
-var data = "12/17 01:19:50 Tx PL HouseUnit: A1\n12/17 01:19:51 Tx PL House: A Func: On\n12/17 01:19:51 Tx PL HouseUnit: B1\n12/17 01:19:51 Tx PL House: B Func: Off\n"
+var md5sum = crypto.createHash('md5');
 
-var commandPattern = /(\d{2})\/(\d{2})\s(\d{2}):(\d{2}):(\d{2})\s(Tx|Rx)\s(PL|RF)\sHouseUnit:\s(.\d)\n(\d{2})\/(\d{2})\s(\d{2}):(\d{2}):(\d{2})\s(Tx|Rx)\s(PL|RF)\sHouse:\s(.)\sFunc:\s(On|Off)\n?/
+md5sum.update('29d051d32')
+console.log(md5sum.digest('hex'))
 
-var splitCommandsPattern = /(.+\n.+\n?)/
+//<gip><version>1</version><email>jeroen@peetersweb.nl</email><password>fa0736d422d65f32c421809c23ad53c6</password></gip>
 
+console.log(encodeURIComponent('cmd=GWRLogin&data=<gip><version>1</version><email>jeroen@peetersweb.nl</email><password>fa0736d422d65f32c421809c23ad53c6</password></gip>'))
 
-unwrapCommand = function(line){
-  return commandPattern.exec(line)
-}
+<gip><version>1</version><token>918451e91137f8c657a32084a9eb540063588454</token>
 
-splitCommands = function(data){
-  var array = data.split(splitCommandsPattern);
-  var newArray = Array();
-  for(var i = 0; i < array.length; i++){
-    if(array[i].length > 0){
-      newArray.push(array[i])
-    }
-  }
-  return newArray
-}
-
-
-printMatch = function(match){
-  for(var x = 0; x < match.length; x++){
-      console.log(x + ":" + match[x])
-    }
-}
-
-var commands = splitCommands(data);
-printMatch(commands)
-for(var i = 0; i < commands.length; i++){
-  cmdArray = unwrapCommand(commands[i])
-
-  cmd = {txrx: cmdArray[6], iface: cmdArray[7], address: cmdArray[8], house: cmdArray[16], cmd: cmdArray[17]}
-
-  console.log(cmd)
-  console.log('-----');
-}
+UserThermostatSetData
+<gip><version>1</version><token>918451e91137f8c657a32084a9eb540063588454</token><system>heating</system><fan>none</fan><tempsetheat>15.0</tempsetheat>

@@ -1,10 +1,13 @@
 var socketio = require('socket.io')
     , x10 = require('./x10.js')
+    , thermostat = require('./thermostat.js')
     , model = require('../model.json')
+    
+var io = null
 
 exports.init = function(server){
 
-  var io = socketio.listen(server)
+  io = socketio.listen(server)
 
   io.configure('development', function(){
     console.log('develop')
@@ -22,6 +25,10 @@ exports.init = function(server){
 
   io.sockets.on('connection', function (socket) {
     socket.emit('devices', model)
+    
+    thermostat.getTemperature(function(currentTemp){
+        socket.emit('current-temp', currentTemp)
+    })
 
     socket.on('device-on', function (device) {
       x10.sendOn(device.address)
@@ -33,4 +40,8 @@ exports.init = function(server){
 
   })
 
+}
+
+exports.sendCurrentTempToClients = function(temp){
+    io.sockets.emit('current-temp', temp)
 }

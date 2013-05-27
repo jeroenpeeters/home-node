@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/stylesheets/bootstrap.min.css" />
     <link rel="stylesheet" href="/stylesheets/bootstrap-responsive.min.css" />
     <link rel="stylesheet" href="/stylesheets/slider.css" />
+    <link rel="stylesheet" href="/stylesheets/home-node.css" />
     <script type="text/javascript" src="/javascript/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="/javascript/bootstrap.min.js" ></script>
     <script type="text/javascript" src="/javascript/bootstrap-slider.js" ></script>
@@ -25,6 +26,7 @@
               <a data-bind="text: $data, attr: { href: $root.getRoomUrl($data), title: $data}" ></a>
             </li>
           </ul>
+          <span class="temp pull-right" data-bind="html: currentTemp() + '&deg;C', visible: currentTemp() !== undefined"></span>
         </div>
       </div>
     </div>
