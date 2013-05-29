@@ -1,4 +1,5 @@
 var socketio = require('socket.io')
+    , pubsub = require('./pubsub.js')
     , x10 = require('./x10.js')
     , thermostat = require('./thermostat.js')
     , model = require('../model.json')
@@ -26,8 +27,8 @@ exports.init = function(server){
   io.sockets.on('connection', function (socket) {
     socket.emit('devices', model)
     
-    thermostat.getTemperature(function(currentTemp){
-        socket.emit('current-temp', currentTemp)
+    thermostat.getStatus(function(status){
+        socket.emit('thermostat', status)
     })
 
     socket.on('device-on', function (device) {
@@ -39,9 +40,9 @@ exports.init = function(server){
     })
 
   })
+  
+  pubsub.on('/sensor/thermostat', function(status){
+      io.sockets.emit('thermostat', status)
+  })
 
-}
-
-exports.sendCurrentTempToClients = function(temp){
-    io.sockets.emit('current-temp', temp)
 }

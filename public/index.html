@@ -26,7 +26,8 @@
               <a data-bind="text: $data, attr: { href: $root.getRoomUrl($data), title: $data}" ></a>
             </li>
           </ul>
-          <span class="temp pull-right" data-bind="html: currentTemp() + '&deg;C', visible: currentTemp() !== undefined"></span>
+          <span class="temp pull-right" data-bind="visible: thermostat() !== undefined, html: (thermostat()!== undefined ? thermostat().temp : 0) + '&deg;C'"></span>
+          <img class="temp pull-right" title="CV Boiler is on" src="/images/flame.png" width="12px" data-bind="visible: thermostat()!== undefined && thermostat().boilerActive"/>
         </div>
       </div>
     </div>

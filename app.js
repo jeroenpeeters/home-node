@@ -4,6 +4,7 @@ var express = require('express')
     , http = require('http')
     , socketio = require('./src/socket-io.js')
     , scheduler = require('./src/scheduler.js')
+    , thermostat = require('./src/thermostat.js')
     , config = require('./config.json')
 
 var app = express()
@@ -11,6 +12,7 @@ var server = http.createServer(app)
 
 socketio.init(server)
 scheduler.init()
+thermostat.init()
 
 //function compile(str, path) {
 //    return stylus(str)

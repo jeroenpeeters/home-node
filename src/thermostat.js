@@ -3,9 +3,11 @@
  */
 var http = require('https'), 
     crypto = require('crypto'),
+    pubsub = require('./pubsub.js'),
     config = require('../config.json')
 
 var gw_host = config.gw_host, gw_path = config.gw_path, gw_username = config.gw_username, gw_password = config.gw_password
+
 
 function doGWRequest(cmd, data, callback) {
     var post_data = 'cmd=' + cmd + '&fmt=json&data=<gip><version>1</version>' + encodeURIComponent(data) + '</gip>'
@@ -87,7 +89,15 @@ function getToken(callback, forceLogin) {
     })
 }
 
-function getTemperature(tempCallback) {
+function buildStatus(json){
+    return {
+        temp: parseFloat(json.gip.thermostat.tempin) + config.temp_correction,
+        guardLowTemp: parseFloat(json.gip.thermostat.tempsetheat),
+        boilerActive: json.gip.thermostat.boilerstatus == '1'
+    }
+}
+
+function getStatus(statusCallback) {
     var refreshToken = true
     
     var callback = function(token) {
@@ -98,13 +108,15 @@ function getTemperature(tempCallback) {
 
         doGWRequest('UserThermostatGetData', query, function(json) {
             if(isSuccessful(json)){
-                tempCallback(parseFloat(json.gip.thermostat.tempin) + config.temp_correction)
+                console.log(json)
+                var status = buildStatus(json)
+                statusCallback(status)
             }else if(refreshToken && isInvalidLogin(json)){
                 console.warn('UserThermostatGetData failed because of invalid token, trying to refresh access token: ', json)
                 refreshToken = false;
                 getToken(callback)
             }else{
-                tempCallback(null)
+                statusCallback(null)
             }
         })
     }
@@ -112,8 +124,17 @@ function getTemperature(tempCallback) {
     getToken(callback)
 }
 
-exports.getTemperature = getTemperature
+function init(){
+    setInterval(function(){
+        getStatus(function(temperature){
+            pubsub.publish('/sensor/thermostat', temperature)
+        })
+    }, 5 * 60000)
+}
 
-//getTemperature(function(temp){
-//    console.log(temp)
-//})
+exports.init = init
+exports.getStatus = getStatus
+
+getStatus(function(temp){
+    console.log(temp)
+})

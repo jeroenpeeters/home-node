@@ -8,7 +8,7 @@ function AppliencesViewModel() {
   self.getRoomUrl = function(room) {
     return '#' + room;
   };
-  self.currentTemp = ko.observable();
+  self.thermostat = ko.observable();
 
   self.sendOnCommand = function(device){
     socket.emit('device-on', device );
@@ -61,9 +61,7 @@ function AppliencesViewModel() {
   socket.on('device-status', function(device) {
     console.log('device-status: ' + device);
   });
-  socket.on('current-temp', function(temp){
-      self.currentTemp(temp)
-  })
+  socket.on('thermostat', self.thermostat)
 
 }
 

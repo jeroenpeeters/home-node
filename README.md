@@ -18,7 +18,7 @@ Setup on RaspberryPi
 I assume you've already installed an OS (such as Raspbian) and NodeJs on your Pi. If not please do so first. 
 This guide is not about that.
 
-Build an install Mochad
+Build and install Mochad:
 - sudo apt-get install libusb-1.0-0-dev
 - wget http://sourceforge.net/projects/mochad/files/mochad-0.1.15.tar.gz
 - tar xf mochad-0.1.15.tar.gz
@@ -32,4 +32,12 @@ Install Home-Node
 - Download or checkout sources from git
 - node app.js
 
+
+Publisher/Subscriber
+====================
+
+Home-Node uses a publisher/subscriber message bus style to let modules internally communicate.
+Currently the following pubsub topics/endpoints are available:
+
+- /sensor/thermostat
 
