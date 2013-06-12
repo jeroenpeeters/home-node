@@ -1,4 +1,4 @@
-var net = require('net'), db = require('./db.js'), config = require('../config.json')
+var net = require('net'), db = require('./db.js'), pubsub = require('./pubsub.js'), config = require('../config.json')
 
 // X10 Commands code -->
 
@@ -48,7 +48,7 @@ splitCommands = function(data) {
 
 // Receive X10 Events from Mochad -->
 
-exports.init = function(callback) {
+exports.init = function() {
 
     var client = new net.Socket()
     client.connect(config.mochad_port, config.mochad_host, function() {
@@ -69,14 +69,15 @@ exports.init = function(callback) {
                 house : cmdArray[16],
                 cmd : cmdArray[17]
             }
-
-            console.log(cmd)
-            console.log('-----')
-
-            callback(cmd)
+            
+            pubsub.publish('/x10/event',  cmd);
         }
-        // db.updateDevice(device)
     });
+    
+    client.on('error', function(error){
+        console.log("There was a problem connecting to Mochad, check your configuration!", error.code)
+        process.exit(1)
+    })
 }
 
 // <-- Receive X10 Events from Mochad

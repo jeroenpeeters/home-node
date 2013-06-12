@@ -1,0 +1,5 @@
+{"date":"2013-06-12T20:35:15.643Z","event":{"txrx":"Tx","iface":"PL","address":"B2","house":"B","cmd":"On"}}
+{"date":"2013-06-12T20:35:17.796Z","event":{"txrx":"Tx","iface":"PL","address":"B2","house":"B","cmd":"Off"}}
+{"date":"2013-06-12T20:35:18.248Z","event":{"txrx":"Tx","iface":"PL","address":"B2","house":"B","cmd":"On"}}
+{"date":"2013-06-12T20:43:44.200Z","event":{"txrx":"Tx","iface":"PL","address":"B2","house":"B","cmd":"On"}}
+{"date":"2013-06-12T20:43:56.263Z","event":{"txrx":"Tx","iface":"PL","address":"B1","house":"B","cmd":"Off"}}

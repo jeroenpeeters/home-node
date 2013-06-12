@@ -1,37 +1,65 @@
-var nosql = require('nosql')
-    , model = require('../model.json')
+var nosql = require('nosql'), pubsub = require('./pubsub.js'), model = require('../model.js')
 
-var deviceDb = nosql.load('./deviceDb.nosql')
+//var device_db = nosql.load('./db/device.nosql')
+var thermostat_db = nosql.load('./db/thermostat.nosql')
+var x10_db = nosql.load('./db/x10_db.nosql')
 
-
-exports.updateDevice = function(device){
-  deviceDb.update(function(doc){
-    if(doc.address == device.address){
-      return device;
-    }
-    return doc;
-  })
+exports.updateDevice = function(device) {
+    device_db.update(function(doc) {
+        if (doc.address == device.address) {
+            return device;
+        }
+        return doc;
+    })
 }
 
-var insert = function(device){
-  var filter = function(doc){
-    return doc.address == device.address
-  }
-  var count = function(count){
-    if(count == 0){
-      deviceDb.insert(device, 'Inserted new device on address ' + device.address)
-    }
-  }
-  deviceDb.count(filter, count)
+exports.getThermostatHistory = function(callback) {
+    var history = []
+    thermostat_db.each(function(doc) {
+        history.push(doc)
+    }, function(){
+        callback(history)
+    })
 }
 
-var init = function(){
-  for( roomName in model){
-    for(var i = 0; i < model[roomName].length; i++){
-      var device = model[roomName][i];
-      insert(device)
+/*var insert = function(device) {
+    var filter = function(doc) {
+        return doc.address == device.address
     }
-  }
+    var count = function(count) {
+        if (count == 0) {
+            device_db.insert(device, 'Inserted new device on address ' + device.address)
+        }
+    }
+    device_db.count(filter, count)
+}*/
+
+var init = function() {
+    /*for (roomName in model.devices) {
+        for ( var i = 0; i < model.devices[roomName].length; i++) {
+            var device = model.devices[roomName][i];
+            insert(device)
+        }
+    }*/
 }
 
 init()
+/**
+ * Read X10 events and save them to the database
+ */
+pubsub.on('/x10/event', function(event){
+    x10_db.insert({
+        date : new Date(),
+        event : event
+    })
+})
+
+/**
+ * Read thermostat updates and save the to the database
+ */
+pubsub.on('/sensor/thermostat', function(thermostat) {
+    thermostat_db.insert({
+        date : new Date(),
+        thermostat : thermostat
+    })
+})

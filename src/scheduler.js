@@ -3,7 +3,6 @@
  */
 var schedule = require('node-schedule'),
     socketio = require('./socket-io.js'),
-    thermostat = require('./thermostat.js'),
     pubsub = require('./pubsub.js')
     
 exports.init = function(){

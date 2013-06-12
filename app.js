@@ -4,15 +4,27 @@ var express = require('express')
     , http = require('http')
     , socketio = require('./src/socket-io.js')
     , scheduler = require('./src/scheduler.js')
-    , thermostat = require('./src/thermostat.js')
+    , model_maintainer = require('./src/model_maintainer.js')
     , config = require('./config.json')
+    
+require('./src/x10.js').init()
+    
+var plugins = ['thermostat/greenwave-reality'];
 
 var app = express()
 var server = http.createServer(app)
 
+require('./src/db.js')
+model_maintainer.init(config);
+
+for(i in plugins){
+    var plugin = require('./src/plugins/' + plugins[i])
+    plugin.init(config)
+}
+
 socketio.init(server)
 scheduler.init()
-thermostat.init()
+//thermostat.init()
 
 //function compile(str, path) {
 //    return stylus(str)

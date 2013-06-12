@@ -1,48 +1,46 @@
-var socketio = require('socket.io')
-    , pubsub = require('./pubsub.js')
-    , x10 = require('./x10.js')
-    , thermostat = require('./thermostat.js')
-    , model = require('../model.json')
-    
+var socketio = require('socket.io'), pubsub = require('./pubsub.js'), x10 = require('./x10.js'), db = require('./db.js'), model = require('../model.js')
+
 var io = null
 
-exports.init = function(server){
+exports.init = function(server) {
 
-  io = socketio.listen(server)
+    io = socketio.listen(server)
 
-  io.configure('development', function(){
-    console.log('develop')
-    io.set('transports', [
-      //  'websocket'
-      //'htmlfile'
-      'xhr-polling'
-     // , 'jsonp-polling'
-    ])
-  })
-
-  x10.init(function(data){
-    io.sockets.emit('device-status', data)
-  })
-
-  io.sockets.on('connection', function (socket) {
-    socket.emit('devices', model)
-    
-    thermostat.getStatus(function(status){
-        socket.emit('thermostat', status)
+    io.configure('development', function() {
+        console.log('develop')
+        io.set('transports', [
+        // 'websocket'
+        // 'htmlfile'
+        'xhr-polling'
+        // , 'jsonp-polling'
+        ])
     })
 
-    socket.on('device-on', function (device) {
-      x10.sendOn(device.address)
+
+    // Index page connections
+    var index = io.of('/index').on('connection', function(socket) {
+        socket.emit('devices', model.devices)
+        socket.emit('thermostat', model.thermostat)
+
+        socket.on('device-on', function(device) {
+            x10.sendOn(device.address)
+        })
+
+        socket.on('device-off', function(device) {
+            x10.sendOff(device.address)
+        })
+
+    })
+    pubsub.on('/model', function(model) {
+      index.emit('devices', model.devices)
+      index.emit('thermostat', model.thermostat)
     })
 
-    socket.on('device-off', function (device) {
-      x10.sendOff(device.address)
+    // Thermostat page connections
+    var thermostat = io.of('/thermostat').on('connection', function(socket){
+        db.getThermostatHistory(function(history){
+            socket.emit('history', history)
+        })
     })
-
-  })
-  
-  pubsub.on('/sensor/thermostat', function(status){
-      io.sockets.emit('thermostat', status)
-  })
 
 }

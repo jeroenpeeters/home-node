@@ -40,4 +40,14 @@ Home-Node uses a publisher/subscriber message bus style to let modules internall
 Currently the following pubsub topics/endpoints are available:
 
 - /sensor/thermostat
+- /x10/event
+Events from the X10 bus are published to this endpoint. 
+format:  {
+    txrx,
+    iface,
+    address,
+    house,
+    cmd
+}
+- /model
 
