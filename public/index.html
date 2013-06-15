@@ -3,9 +3,11 @@
   <head>
     <title>Home Node</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/stylesheets/bootstrap.min.css" />
     <link rel="stylesheet" href="/stylesheets/bootstrap-responsive.min.css" />
     <link rel="stylesheet" href="/stylesheets/slider.css" />
+    <link rel="stylesheet" href="/stylesheets/toggle-switch.css">
     <link rel="stylesheet" href="/stylesheets/home-node.css" />
     <script type="text/javascript" src="/javascript/libs/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="/javascript/libs/bootstrap.min.js" ></script>
@@ -13,10 +15,11 @@
     <script type="text/javascript" src="/javascript/libs/knockout-2.2.1.js" ></script>
     <script type="text/javascript" src="/javascript/libs/sammy-latest.min.js" ></script>
     <script type="text/javascript" src="/socket.io/socket.io.js" ></script>
+    <script type="text/javascript" src="/javascript/libs/highcharts.js"></script>
   </head>
 
   <body>
-
+    
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
@@ -26,42 +29,45 @@
               <a data-bind="text: $data, attr: { href: $root.getRoomUrl($data), title: $data}" ></a>
             </li>
           </ul>
-          <a href="/thermostat.html">
-              <span class="temp pull-right" data-bind="visible: thermostat() !== undefined, html: (thermostat()!== undefined ? thermostat().current_temp : 0) + '&deg;C'"></span>
+          <a href="/#thermostat">
+              <span class="temp pull-right" data-bind="fadeVisible: thermostat() !== undefined, html: (thermostat()!== undefined ? thermostat().current_temp : 0) + '&deg;C'"></span>
               <img class="temp pull-right" title="CV Boiler is on" src="/images/flame.png" width="12px" data-bind="visible: thermostat()!== undefined && thermostat().boiler_active"/>
           </a>
           </div>
       </div>
     </div>
-    <div class="container" style="margin-top:50px;">
+    
+    <div class="container" id="container_dashboard" style="margin-top:50px;" data-bind="fadeVisible: selectedView() == 'dashboard'">
+        <h1>Dashboard</h1>
+    </div>
+    
+    <div class="container" id="container_appliance" style="margin-top:50px;" data-bind="fadeVisible: selectedView() == 'appliance'">
       <div class="page-header">
         <h1 data-bind="text: selectedRoomId" />
       </div>
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <td>Appliance</td>
-            <td>Switch</td>
-            <td>Dimmer</td>
-          </tr>
-        </thead>
-        <tbody data-bind="foreach: { data: availableAppliences, afterRender: $root.initSliders}">
-          <tr>
-            <td data-bind="text: name"> ... </td>
-            <td>
-              <div class="btn-group" data-toggle="buttons-radio">
-                <button class="btn btn-large btn-success" type="button" data-bind="click: $root.sendOnCommand.bind($data)">On</button>
-                <button class="btn btn-large btn-danger" type="button" data-bind="click: $root.sendOffCommand.bind($data)">Off</button>
+      <div class="row-fluid" data-bind="foreach: { data: availableAppliences, afterRender: $root.initSliders}">
+          <div class="span6">
+              <div class="panel">
+                  <div class="panel-heading">
+                      <span data-bind="text: name"></span>
+                      <label class="checkbox toggle android" style="width:10em; margin-left:0; margin-top:-0.5em; float:right" onclick="">
+                          <input type="checkbox" data-bind="checked: $data.state == 'on', click: $data.state == 'on' ? $root.sendOffCommand.bind($data) : $root.sendOnCommand.bind($data)" />
+                          <p>
+                              <span>On</span>
+                              <span>Off</span>
+                          </p>
+                          <a class="slide-button"></a>
+                      </label>
+                  </div>
+                  
+                  <!-- input type="text" class="sl" value="4" data-bind="attr: { id: 'sl' + address }"/ -->
               </div>
-            </td>
-            <td>
-              <input type="text" class="sl" value="4" data-bind="attr: { id: 'sl' + address }"/>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
+          </div>
+      </div>
     </div>
+    
+    <div class="container" id="container_thermostat" style="height: 400px; margin-top:50px;" data-bind="fadeVisible: selectedView() == 'thermostat'"></div>
+    
     <script type="text/javascript" src="/javascript/hn-index.js" ></script>
   </body>
 

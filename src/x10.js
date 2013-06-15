@@ -61,7 +61,7 @@ exports.init = function() {
 
         for ( var i = 0; i < commands.length; i++) {
             cmdArray = unwrapCommand(commands[i])
-
+            
             cmd = {
                 txrx : cmdArray[6],
                 iface : cmdArray[7],

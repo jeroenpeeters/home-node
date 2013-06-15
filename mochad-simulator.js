@@ -5,7 +5,7 @@ var plCommandOnOffRegexp = /pl ([a-z][0-9]) (on|off)\r?\n?/
 function getDateString() {
     var d = new Date()
     var month = d.getMonth() + 1
-    return (month > 9 ? month : '0' + month) + "/" + (d.getDate() > 9 ? d.getDate() : '0' + d.getDate()) + " " + d.getHours() + ":" + d.getMinutes()
+    return (month > 9 ? month : '0' + month) + "/" + (d.getDate() > 9 ? d.getDate() : '0' + d.getDate()) + " " + (d.getHours() > 9 ? d.getHours() : '0' + d.getHours()) + ":" + (d.getMinutes() > 9 ? d.getMinutes() : '0' + d.getMinutes())
             + ":" + (d.getSeconds() > 9 ? d.getSeconds() : '0' + d.getSeconds()) + " ";
 }
 

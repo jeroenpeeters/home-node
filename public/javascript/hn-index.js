@@ -1,11 +1,87 @@
-function AppliencesViewModel() {
+/**
+ * Socket.io socket
+ */
+var socket = null;
+
+/**
+ * Cient side view routes using Sammy
+ * 
+ * @param viewModel
+ */
+function initSammy(viewModel) {
+    Sammy(function(){
+        
+        this.get('#thermostat', function(){
+            init_thermostat()
+            viewModel.selectedView('thermostat')
+            viewModel.selectedRoomId(null)
+            viewModel.availableAppliences(null)
+        })
+        
+        this.get('#:roomId', function() {
+            viewModel.selectedView('appliance')
+            viewModel.selectedRoomId(this.params.roomId)
+            viewModel.availableAppliences(viewModel.data()[this.params.roomId])
+        })
+        
+        
+        
+        // Default routes forwards to first room
+        this.get('', function() {
+            //this.app.runRoute('get', '#' + room)
+            viewModel.selectedView('dashboard')
+        })
+    }).run()
+}
+
+/**
+ * Initializes the application and updates the view-model
+ * 
+ * @param viewModel
+ */
+function appInit(viewModel){
+    var flag = true;
+    socket = io.connect(window.location.protocol + '//' + window.location.host + '/index' );
+    socket.on('devices', function(devices) {
+        var tmpRooms = new Array();
+        for (property in devices) {
+            tmpRooms.push(property);
+        }
+        viewModel.rooms(tmpRooms);
+        viewModel.data(devices);
+        if(viewModel.selectedRoomId()){
+            viewModel.availableAppliences(viewModel.data()[viewModel.selectedRoomId()]);    
+        }
+        
+        
+        // init sammy after the viewModel has been populated with data
+        if(flag){
+            initSammy(viewModel)
+            flag = false;
+        }
+    });
+
+    // update viewModel on reception of updates from server
+    socket.on('device-status', function(device) {
+        console.log('device-status: ' + device);
+    });
+    socket.on('thermostat', viewModel.thermostat)
+    
+}
+
+/**
+ * Knockout.js ViewModel
+ */
+function HomeNodeViewModel() {
     var self = this;
+    
+    self.selectedView = ko.observable('  ');
 
     self.rooms = ko.observableArray();
     self.selectedRoomId = ko.observable();
     // self.roomAppliences = ko.observable();
     self.getRoomUrl = function(room) {
-        return '#' + room;
+        return '/#' + room;
     };
     self.thermostat = ko.observable();
 
@@ -17,7 +93,7 @@ function AppliencesViewModel() {
         socket.emit('device-off', device);
     };
 
-    self.data = ko.observable();
+    self.data = ko.observableArray();
 
     self.availableAppliences = ko.observableArray();
 
@@ -28,42 +104,24 @@ function AppliencesViewModel() {
             }
         });
     }
-
-    var initSammy = function(room) {
-        // Client-side routes
-        Sammy(function() {
-            this.get('#:roomId', function() {
-                self.selectedRoomId(this.params.roomId);
-                console.log(self.data()[this.params.roomId])
-                self.availableAppliences(self.data()[this.params.roomId]);
-                console.log(self.availableAppliences());
-                // self.chosenMailData(null);
-                // $.get("/mail", { folder: this.params.folder }, self.chosenFolderData);
-            });
-
-            // Default routes forwards to first room
-            this.get('', function() {
-                this.app.runRoute('get', '#' + room)
-            });
-        }).run();
-    }
     
-    var socket = io.connect(window.location.protocol + '//' + window.location.host + '/index' );
-    socket.on('devices', function(devices) {
-        var tmpRooms = new Array();
-        for (property in devices) {
-            tmpRooms.push(property);
-        }
-        self.rooms(tmpRooms);
-        self.data(devices);
-        initSammy(tmpRooms[0]);
-    });
-
-    socket.on('device-status', function(device) {
-        console.log('device-status: ' + device);
-    });
-    socket.on('thermostat', self.thermostat)
-
+    appInit(this);
 }
 
-ko.applyBindings(new AppliencesViewModel());
+ko.bindingHandlers.fadeVisible = {
+    init: function(element, valueAccessor) {
+        // Initially set the element to be instantly visible/hidden depending on the value
+        var value = valueAccessor();
+        $(element).toggle(ko.utils.unwrapObservable(value)); // Use "unwrapObservable" so we can handle values that may or may not be observable
+    },
+    update: function(element, valueAccessor) {
+        // Whenever the value subsequently changes, slowly fade the element in or out
+        var value = valueAccessor();
+        ko.utils.unwrapObservable(value) ? $(element).fadeIn() : $(element).toggle(false);
+    }
+};
+
+$.getScript('/javascript/hn-thermostat.js', function()
+{
+    ko.applyBindings(new HomeNodeViewModel());
+});

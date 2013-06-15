@@ -27,12 +27,11 @@ exports.init = function(config) {
                 var device = model.devices[room][index]
                 
                 if(device.address.toLowerCase() === event.address.toLowerCase()){
-                    device.state = event.cmd.toLowerCase();
-                    console.log("updated device: ", device)
+                    device.state = event.cmd.toLowerCase()
                 }
             }
         }
-        console.log(model);
+        publish_model_update()
     })
     
     
