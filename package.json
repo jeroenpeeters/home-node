@@ -8,6 +8,7 @@
     "stylus": "*",
     "nib": "*",
     "nosql": "*",
-    "suncalc": "1.2.1"
+    "suncalc": "1.2.1",
+    "coffee-script": "*"
   }
 }

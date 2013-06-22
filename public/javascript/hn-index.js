@@ -28,8 +28,12 @@ function initSammy(viewModel) {
         this.get('', function() {
             // this.app.runRoute('get', '#' + room)
             viewModel.selectedView('dashboard')
+            viewModel.selectedRoomId(null)
+            viewModel.availableAppliences(null)
         })
     }).run()
+    
+    $('.container').css('visibility', 'visible');
 }
 
 /**

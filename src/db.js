@@ -1,4 +1,6 @@
-var nosql = require('nosql'), pubsub = require('./pubsub.js'), model = require('../model.js')
+var nosql = require('nosql')
+var pubsub = require('./pubsub.js')
+var model = require('../model.js')
 
 //var device_db = nosql.load('./db/device.nosql')
 var thermostat_db = nosql.load('./db/thermostat.nosql')
@@ -20,6 +22,12 @@ exports.getThermostatHistory = function(callback) {
     }, function(){
         callback(history)
     })
+}
+
+exports.getThermostatSinceDate = function(date, callback){
+    thermostat_db.all(function(doc){
+        return new Date(doc.date) > date
+    }, callback)
 }
 
 /*var insert = function(device) {

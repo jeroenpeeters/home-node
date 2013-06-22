@@ -26,5 +26,6 @@ exports.devices = {
 exports.thermostat = {
     current_temp : 0,
     heating_temp : 0,
-    boiler_active : false
+    boiler_active : false,
+    trend: '0'
 }

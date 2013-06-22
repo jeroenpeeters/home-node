@@ -1,3 +1,9 @@
+Highcharts.setOptions({
+    global: {
+        useUTC: false
+    }
+});
+
 function init_thermostat() {
 
     var socket = io.connect(window.location.protocol + '//' + window.location.host + '/thermostat');

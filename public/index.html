@@ -32,6 +32,8 @@
           </ul>
           <a href="/#thermostat">
               <span class="temp pull-right" data-bind="fadeVisible: thermostat() !== undefined, html: (thermostat()!== undefined ? thermostat().current_temp : 0) + '&deg;C'"></span>
+              <img class="temp trend pull-right" title="Temperature is increasing" src="/images/arrow_up.png" data-bind="visible: thermostat()!== undefined && thermostat().trend > 0"/>
+              <img class="temp trend pull-right" title="Temperature is decreasing" src="/images/arrow_down.png" data-bind="visible: thermostat()!== undefined && thermostat().trend < 0"/>
               <img class="temp pull-right" title="CV Boiler is on" src="/images/flame.png" width="12px" data-bind="visible: thermostat()!== undefined && thermostat().boiler_active"/>
           </a>
           </div>

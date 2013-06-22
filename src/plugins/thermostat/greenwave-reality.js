@@ -1,7 +1,10 @@
 /**
  * GreenWave Reality Thermostat
  */
-var http = require('https'), crypto = require('crypto'), pubsub = require('../../pubsub.js')
+var http = require('https')
+var crypto = require('crypto')
+var db = require('../../db.js')
+var pubsub = require('../../pubsub.js')
 
 exports.init = function(config) {
     var gw_host = config.gw_host, gw_path = config.gw_path, gw_username = config.gw_username, gw_password = config.gw_password
@@ -88,11 +91,25 @@ exports.init = function(config) {
         })
     }
 
+    function getTrend(status, callback) {
+        var date = new Date(new Date().getTime() - 15 * 60000); // get latest data over 15 minutes
+        db.getThermostatSinceDate(date, function(arr) {
+            var tmp_avg = 0
+            for (i in arr) {
+                tmp_avg += arr[i].thermostat.current_temp
+            }
+            tmp_avg /= arr.length
+            status.trend = status.current_temp > tmp_avg ? 1 : status.current_temp < tmp_avg ? -1 : 0
+            callback(status)
+        })
+    }
+
     function buildStatus(json) {
         return {
             current_temp : parseFloat(json.gip.thermostat.tempin) + config.temp_correction,
             heating_temp : parseFloat(json.gip.thermostat.tempsetheat),
-            boiler_active : json.gip.thermostat.boilerstatus == '1'
+            boiler_active : json.gip.thermostat.boilerstatus == '1',
+            trend : undefined
         }
     }
 
@@ -108,7 +125,8 @@ exports.init = function(config) {
             doGWRequest('UserThermostatGetData', query, function(json) {
                 if (isSuccessful(json)) {
                     var status = buildStatus(json)
-                    statusCallback(status)
+
+                    getTrend(status, statusCallback)
                 } else if (refreshToken && isInvalidLogin(json)) {
                     console.warn('UserThermostatGetData failed because of invalid token, trying to refresh access token: ', json)
                     refreshToken = false;
@@ -127,12 +145,11 @@ exports.init = function(config) {
             pubsub.publish('/sensor/thermostat', temperature)
         })
     }
-    
+
     // Refresh after init
     getAndPublishStatus()
-    
+
     // Refresh every 5 minutes
     setInterval(getAndPublishStatus, 5 * 60000)
 
 }
-

@@ -4,3 +4,11 @@
   margin-left: -20px;   
   font-weight:bold;
 }
+
+.trend {
+	margin-top:0.1em;
+}
+
+.container {
+	visibility: hidden;
+}
