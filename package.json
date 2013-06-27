@@ -9,6 +9,7 @@
     "nib": "*",
     "nosql": "*",
     "suncalc": "1.2.1",
-    "coffee-script": "*"
+    "coffee-script": "*",
+    "jasmine-node": "*"
   }
 }

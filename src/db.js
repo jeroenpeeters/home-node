@@ -1,6 +1,6 @@
 var nosql = require('nosql')
-var pubsub = require('./pubsub.js')
-var model = require('../model.js')
+var pubsub = require('./pubsub')
+var model = require('../model')
 
 //var device_db = nosql.load('./db/device.nosql')
 var thermostat_db = nosql.load('./db/thermostat.nosql')
