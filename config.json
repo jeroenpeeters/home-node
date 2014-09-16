@@ -12,8 +12,8 @@
   "temp_correction" : 0,
 
   "kaku": {
-    "gpio": 15
-    "cmd": "sudo /home/pi/node-projects/kakutest/transmitters/kaku -p 15"
+    "gpio": 15,
+    "cmd": "sudo /home/pi/node-projects/kakutest/transmitters/kaku/kaku -p 15"
   }
 
 }

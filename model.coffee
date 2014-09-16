@@ -11,10 +11,12 @@ x10   = (name, address) -> lamp(name, type: "x10", address: address)
 kaku  = (name, group, device) -> lamp(name, type: "kaku", group: group, device: device)
 
 schemerlamp       = kaku "Schemerlamp", "12493714", 0
+pianolamp         = kaku "Lamp op Piano", "12493714", 1
 schuurlamp_buiten = x10 "Schuurlamp buiten", "b1"
 schuurlamp_binnen = x10 "Schuurlamp binnen", "b2"
 
 exports.devices = [
+  pianolamp
   schemerlamp
   schuurlamp_buiten
   schuurlamp_binnen
@@ -23,6 +25,7 @@ exports.devices = [
 exports.rooms =
   Huiskamer: [
     schemerlamp
+    pianolamp
   ]
   Tuin: [
     schuurlamp_buiten
