@@ -32,12 +32,15 @@ net.createServer(function(sock) {
         var match = null;
 
         var response = '';
+        console.log(data);
 
         if ((match = plCommandOnOffRegexp.exec(data)) != null) {
             response = PLOnOff(match)
         } else {
             console.log('Unsupported Mochad command | ' + sock.remoteAddress + ': ' + data)
         }
+
+      console.log(response);
 
         for (index in sockets) {
             sockets[index].write(response)
@@ -46,10 +49,7 @@ net.createServer(function(sock) {
     })
 
     sock.on('close', function(data) {
-        console.log(sockets.length);
-        console.log('CLOSED')
         sockets.splice(sockets.indexOf(sock), 1);
-        console.log(sockets.length);
     })
 
 }).listen(config.mochad_port, config.mochad_host)

@@ -3,13 +3,14 @@
  */
 var http = require('https')
 var crypto = require('crypto')
-var db = require('../../db.js')
-var pubsub = require('../../pubsub.js')
+var db = require('../../db')
+var pubsub = require('../../pubsub')
 
-exports.init = function(config) {
+exports.init = function(app) {
+    config = app.config
     var gw_host = config.gw_host, gw_path = config.gw_path, gw_username = config.gw_username, gw_password = config.gw_password
 
-    console.log("Init GreenWave Reality Thermostat Plugin:", config.gw_host)
+    console.log("Initializing GreenWave Reality Thermostat Plugin:", config.gw_host)
 
     function doGWRequest(cmd, data, callback) {
         var post_data = 'cmd=' + cmd + '&fmt=json&data=<gip><version>1</version>' + encodeURIComponent(data) + '</gip>'
@@ -142,7 +143,7 @@ exports.init = function(config) {
 
     function getAndPublishStatus() {
         getStatus(function(temperature) {
-            pubsub.publish('/sensor/thermostat', temperature)
+            if(temperature != null) pubsub.publish('/sensor/thermostat', temperature)
         })
     }
 

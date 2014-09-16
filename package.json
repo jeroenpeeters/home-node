@@ -10,6 +10,8 @@
     "nosql": "*",
     "suncalc": "1.2.1",
     "coffee-script": "*",
-    "jasmine-node": "*"
+    "jasmine-node": "*",
+    "underscore": "1.7.0",
+    "node-uuid": "~1.4.1"
   }
 }

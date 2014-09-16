@@ -1,6 +1,6 @@
 var nosql = require('nosql')
+var _ = require('underscore')
 var pubsub = require('./pubsub')
-var model = require('../model')
 
 //var device_db = nosql.load('./db/device.nosql')
 var thermostat_db = nosql.load('./db/thermostat.nosql')
@@ -20,7 +20,7 @@ exports.getThermostatHistory = function(callback) {
     thermostat_db.each(function(doc) {
         history.push(doc)
     }, function(){
-        callback(history)
+        callback(_.last(history,1000))
     })
 }
 
@@ -30,28 +30,6 @@ exports.getThermostatSinceDate = function(date, callback){
     }, callback)
 }
 
-/*var insert = function(device) {
-    var filter = function(doc) {
-        return doc.address == device.address
-    }
-    var count = function(count) {
-        if (count == 0) {
-            device_db.insert(device, 'Inserted new device on address ' + device.address)
-        }
-    }
-    device_db.count(filter, count)
-}*/
-
-var init = function() {
-    /*for (roomName in model.devices) {
-        for ( var i = 0; i < model.devices[roomName].length; i++) {
-            var device = model.devices[roomName][i];
-            insert(device)
-        }
-    }*/
-}
-
-init()
 /**
  * Read X10 events and save them to the database
  */

@@ -1,4 +1,4 @@
-var net = require('net'), db = require('./db.js'), pubsub = require('./pubsub.js'), config = require('../config.json')
+var net = require('net'), db = require('./db'), pubsub = require('./pubsub'), config = require('../config.json')
 
 // X10 Commands code -->
 
@@ -56,12 +56,13 @@ exports.init = function() {
     })
 
     client.on('data', function(dataArray) {
+        console.log('onData', String(dataArray));
         var data = '' + String(dataArray) // needed to convert char array to string
         var commands = splitCommands(data)
 
         for ( var i = 0; i < commands.length; i++) {
             cmdArray = unwrapCommand(commands[i])
-            
+
             cmd = {
                 txrx : cmdArray[6],
                 iface : cmdArray[7],
@@ -69,11 +70,10 @@ exports.init = function() {
                 house : cmdArray[16],
                 cmd : cmdArray[17]
             }
-            
             pubsub.publish('/x10/event',  cmd);
         }
     });
-    
+
     client.on('error', function(error){
         console.log("There was a problem connecting to Mochad, check your configuration!", error.code)
         process.exit(1)
