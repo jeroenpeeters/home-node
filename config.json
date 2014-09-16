@@ -13,6 +13,7 @@
 
   "kaku": {
     "gpio": 15
+    "cmd": "sudo /home/pi/node-projects/kakutest/transmitters/kaku -p 15"
   }
 
 }

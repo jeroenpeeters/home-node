@@ -1,6 +1,7 @@
 #
 # Plugin for Klik Aan Klik Uit devices
 #
+exec = require('child_process').exec
 pubsub = require '../../pubsub'
 
 exports.init = (app) ->
@@ -12,6 +13,7 @@ exports.init = (app) ->
   pubsub.on '/device/on', (device) ->
     unless device.config.type == 'kaku' then return
 
+    exec "#{config.kaku.cmd} -g #{device.config.group} -n #{device.config.device} on"
     device.state = 'on'
 
     pubsub.publish '/model/devices', device
@@ -20,6 +22,7 @@ exports.init = (app) ->
   pubsub.on '/device/off', (device) ->
     unless device.config.type == 'kaku' then return
 
+    exec "#{config.kaku.cmd} -g #{device.config.group} -n #{device.config.device} off"
     device.state = 'off'
 
     pubsub.publish '/model/devices', device
